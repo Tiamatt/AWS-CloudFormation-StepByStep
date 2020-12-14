@@ -1,0 +1,9 @@
+Resources:
+  Ec2Instance: # Logical ID
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-5b41123e # AMI ID for us-east-1
+      Tags:
+        - Key: Name
+          Value: JonSnow CloudFormation
