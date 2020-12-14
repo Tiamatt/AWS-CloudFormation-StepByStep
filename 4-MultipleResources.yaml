@@ -1,0 +1,27 @@
+Resources:
+  KaliEc2Instance: # Logical ID
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-5b41123e # AMI ID for us-east-1
+      Tags:
+        - Key: Name
+          Value: JonSnowCloudFormation
+        - Key: User
+          Value: cloud-formation-user
+      SecurityGroups:
+        - !Ref KaliSecurityGroup # Refer to SecurityGroup that will be created
+  KaliSecurityGroup: # Logical ID
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: JonSnowCloudFormation
+        - Key: User
+          Value: cloud-formation-user
