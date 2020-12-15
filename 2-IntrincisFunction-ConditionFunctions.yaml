@@ -1,0 +1,38 @@
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: "ami-0ff8a91507f77f867"
+    us-west-1:
+      AMI: "ami-0bdb828fd58c52235"
+
+Parameters:
+  EnvType:
+    Description: Environment type
+    Default: test
+    Type: String
+    AllowedValues: [prod, dev, test]
+    ConstraintDescription: must specify prod, dev, or test.
+  
+Conditions:
+  CreateProdResources: !Equals [!Ref EnvType, prod] # use Fn::Equals and Ref
+  CreateDevResources: !Equals [!Ref EnvType, "dev"] # use Fn::Equals and Ref
+
+Resources:
+  EC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] # use Fn::FindInMap and Ref
+      InstanceType: !If [CreateProdResources, c1.xlarge, !If [CreateDevResources, m1.large, m1.small]] # use Fn::If   
+  MountPoint:
+    Type: "AWS::EC2::VolumeAttachment"
+    Condition: CreateProdResources
+    Properties:
+      InstanceId: !Ref EC2Instance # use Ref
+      VolumeId: !Ref NewVolume # use Ref
+      Device: /dev/sdh
+  NewVolume:
+    Type: "AWS::EC2::Volume"
+    Condition: CreateProdResources
+    Properties:
+      Size: 100
+      AvailabilityZone: !GetAtt EC2Instance.AvailabilityZone # use Fn::GetAtt
