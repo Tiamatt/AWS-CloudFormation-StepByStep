@@ -1,0 +1,17 @@
+Parameters:
+  NameOfService: # declare NameOfService as an input param
+    Description: "The name of the service this stack is to be used for."
+    Type: String
+  KeyName: # declare KeyName as an input param
+    Description: Name of an existing EC2 KeyPair to enable SSH access into the server
+    Type: AWS::EC2::KeyPair::KeyName
+Resources:
+  KaliEc2Instance: # Logical ID
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-5b41123e # AMI ID for us-east-1
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfService # call NameOfService as an input param
+      KeyName: !Ref KeyName # call KeyName as an input param
